@@ -9,7 +9,7 @@ router.get('/', async (ctx) => {
 });
 
 router.get("/users", userCRUD.getAllUsers);
-router.get("/users/:id", userCRUD.getUser);
+router.get("/users/:name", userCRUD.getUser);
 // router.get("/users/:name", userCRUD.getUserByName);
 router.post("/users", userCRUD.createUser);
 router.put("/users/:id", userCRUD.updateUser);

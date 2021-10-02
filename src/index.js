@@ -7,12 +7,12 @@
 // todas as configuraçoes devem ser passadas via environment variables
 const PORT = process.env.PORT || 3000;
 
-const Koa = require('koa');
-const Router = require('koa-router');
+const Koa = require("koa");
+const Router = require("koa-router");
 const cors = require("@koa/cors");
 const sequelize = require("./database/database");
 const bodyParser = require("koa-bodyparser");
-const router = require("./routes/routes.js")
+const router = require("./routes/routes.js");
 
 sequelize.sync().then(() => console.log("db is ready"));
 
