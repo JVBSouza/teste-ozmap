@@ -55,7 +55,6 @@ const updateUser = async (ctx, next) => {
   const name = ctx.params.name;
   const { ...body } = ctx.request.body;
   await Users.update(body, { where: { name } }).then((response) => {
-    console.log(response);
     if (response == 0) {
       ctx.throw(404, "User not found");
       ctx.body = {};

@@ -38,10 +38,11 @@ describe("Testes da aplicaçao", () => {
     chai
       .request(app)
       .post("/users")
-      .send({ name: "raupp", email: "jose.raupp@devoz.com.br", age: 17 })
+      .send({ name: "user", email: "jusr@email.com", age: 17 })
       .end(function (err, res) {
-        expect(err).to.be.null;
-        expect(res).to.have.status(201);
+        expect(res.text).to.be.equal("Underage user not allowed");
+        expect(res).to.have.status(400);
+        expect(res.body).to.be.jsonSchema({});
         done();
       });
   });
@@ -91,7 +92,7 @@ describe("Testes da aplicaçao", () => {
       .end(function (err, res) {
         expect(err).to.be.null;
         expect(res).to.have.status(200);
-        expect(res.body).to.be.eql("User updated");
+        expect(res.text).to.be.eql("User updated");
         done();
       });
   });
@@ -121,6 +122,13 @@ describe("Testes da aplicaçao", () => {
   });
 
   it("deveria ser uma lista com pelomenos 5 usuarios", function (done) {
+    for (let i = 0; i < 5; i++) {
+      chai
+        .request(app)
+        .post("/users")
+        .send({ name: "user", email: "user@email.com", age: 20 })
+        .end(function (err, res) {});
+    }
     chai
       .request(app)
       .get("/users")
