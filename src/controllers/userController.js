@@ -28,9 +28,14 @@ const createUser = async (ctx, next) => {
     email: ctx.request.body.email,
     age: ctx.request.body.age,
   };
-  const user = await Users.create(newUser);
-  ctx.status = 201;
-  ctx.body = user;
+  if (newUser.age < 18) {
+    ctx.throw(400, "Underage user not allowed");
+    ctx.body = {};
+  } else {
+    const user = await Users.create(newUser);
+    ctx.status = 201;
+    ctx.body = user;
+  }
 };
 
 const deleteUser = async (ctx, next) => {
@@ -49,14 +54,16 @@ const deleteUser = async (ctx, next) => {
 const updateUser = async (ctx, next) => {
   const name = ctx.params.name;
   const { ...body } = ctx.request.body;
-  const user = await Users.update(body, { where: { name } });
-  if (!user) {
-    ctx.throw(404, "User not found");
-    ctx.body = {};
-  } else {
-    ctx.status = 200;
-    ctx.body = user;
-  }
+  await Users.update(body, { where: { name } }).then((response) => {
+    console.log(response);
+    if (response == 0) {
+      ctx.throw(404, "User not found");
+      ctx.body = {};
+    } else {
+      ctx.status = 200;
+      ctx.body = "User updated";
+    }
+  });
 };
 
 module.exports = {

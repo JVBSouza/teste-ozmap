@@ -10,7 +10,6 @@ const expect = chai.expect;
 
 const userSchema = require("./schemas/user.json");
 
-//testes da aplicação
 describe("Testes da aplicaçao", () => {
   it("o servidor esta online", function (done) {
     chai
@@ -35,6 +34,18 @@ describe("Testes da aplicaçao", () => {
       });
   });
 
+  it("deveria negar um usuario menor de idade", function (done) {
+    chai
+      .request(app)
+      .post("/users")
+      .send({ name: "raupp", email: "jose.raupp@devoz.com.br", age: 17 })
+      .end(function (err, res) {
+        expect(err).to.be.null;
+        expect(res).to.have.status(201);
+        done();
+      });
+  });
+
   it("deveria criar o usuario raupp", function (done) {
     chai
       .request(app)
@@ -47,15 +58,13 @@ describe("Testes da aplicaçao", () => {
       });
   });
 
-  //...adicionar pelo menos mais 5 usuarios. se adicionar usuario menor de idade, deve dar erro. Ps: não criar o usuario naoExiste
-
   it("o usuario naoExiste não existe no sistema", function (done) {
     chai
       .request(app)
       .get("/users/naoExiste")
       .end(function (err, res) {
         console.log(res.body);
-        expect(res.text).to.be.equal("User not found"); //possivelmente forma errada de verificar a mensagem de erro
+        expect(res.text).to.be.equal("User not found");
         expect(res).to.have.status(404);
         expect(res.body).to.be.jsonSchema({});
         done();
@@ -70,6 +79,19 @@ describe("Testes da aplicaçao", () => {
         expect(err).to.be.null;
         expect(res).to.have.status(200);
         expect(res.body).to.be.jsonSchema(userSchema);
+        done();
+      });
+  });
+
+  it("o usuario raupp é modificado", function (done) {
+    chai
+      .request(app)
+      .put("/users/raupp")
+      .send({ name: "raupp", email: "email@devoz.com.br", age: 35 })
+      .end(function (err, res) {
+        expect(err).to.be.null;
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.eql("User updated");
         done();
       });
   });
@@ -92,8 +114,8 @@ describe("Testes da aplicaçao", () => {
       .get("/users/raupp")
       .end(function (err, res) {
         expect(err).to.be.null;
-        expect(res).to.have.status(200);
-        expect(res.body).to.be.jsonSchema(userSchema);
+        expect(res).to.have.status(404);
+        expect(res.body).to.be.jsonSchema({});
         done();
       });
   });
